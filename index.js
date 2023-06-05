@@ -32,10 +32,11 @@ io.on('connection', (socket) => {
     console.log(`user ${socket.id} is now ${player.name}`)
   })
 
-  socket.on('gameStart', () => {
-    io.emit('gameStart')
+  socket.on('start', () => {
+    console.log('game started')
+    io.emit('start')
   })
-
+  
   socket.on('chat message', (msg) => {
     console.log(msg);
     io.emit('chat message', {msg})
@@ -45,31 +46,33 @@ io.on('connection', (socket) => {
     console.log(`${socket.username} betted: $${betAmmount}`)
     if (prizePool === 0){
       player1 = socket.username
+      console.log(`${socket.username} is now player1`)
     } else {
       player2 = socket.username
+      console.log(`${socket.username} is now player2`)
     }
     prizePool+=betAmmount
-    io.emit('bet', betAmmount)
+    io.emit('prize pool', prizePool)
   })
 
   socket.on('diceRoll', (roll) => {
     console.log(`${socket.username} rolled: ${roll}`)
-    io.emit('diceRoll', roll)
+    io.emit('diceRoll', `${socket.username} rolled: ${roll}`)
   })
 
   socket.on('yourNumber', (roll) => {
     console.log(`${socket.username}'s number: ${roll}`)
-    io.emit('yourNumber', roll)
+    io.emit('yourNumber', `${socket.username}'s number: ${roll}`)
   })
 
   socket.on('winner', () => {
-    io.emit('bet', 0)
+    io.emit('reset pool')
     console.log(`${player1} just won $${prizePool}`)
-    socket.emit('prizeMoney', prizePool)
+    io.emit('prizeMoney', {winner: player1, prize: prizePool})
     prizePool = 0;
   })
   socket.on('loser', () => {
-    io.emit('bet', 0)
+    io.emit('reset pool')
     console.log(`${player2} just won $${prizePool}`)
     io.emit('prizeMoney', {winner: player2, prize: prizePool})
     prizePool = 0;
