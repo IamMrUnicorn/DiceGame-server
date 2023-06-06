@@ -1,3 +1,4 @@
+const exp = require('constants');
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -20,6 +21,15 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
+
+// Serve static files from the "client/dist" directory
+app.use(express.static(path.join(__dirname, 'client/dist')));
+
+// Route handler for serving the index.html file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
+});
+
 
 io.on('connection', (socket) => {
   console.log(`${socket.id} connected`);
