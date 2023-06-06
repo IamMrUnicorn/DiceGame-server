@@ -2,6 +2,7 @@ const exp = require('constants');
 const express = require('express');
 const app = express();
 const http = require('http');
+const path = require('path')
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server, {
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the "client/dist" directory
-app.use(express.static(path.join(__dirname, 'client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Route handler for serving the index.html file
 app.get('/', (req, res) => {
